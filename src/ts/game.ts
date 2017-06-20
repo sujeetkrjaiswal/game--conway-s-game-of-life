@@ -1,22 +1,18 @@
 export type gridVal = 0 | 1
 export type grid = gridVal[][]
 export default class Game {
+  public readonly rows: number
+  public readonly cols: number
+
   private state: grid = []
-  private name: string = 'player'
-  public constructor(name: string, initialState: grid) {
-    // Todo : add condition to enforce m X n matrix grid
+  public constructor(initialState: grid) {
+    this.validateInitialState(initialState)
     this.state = initialState
-    this.name = name
-  }
-  public printState(): void {
-    // tslint:disable-next-line no-console
-    console.table(this.state)
+    this.rows = this.state.length
+    this.cols = this.state[0].length
   }
   public getState(): grid {
     return this.state
-  }
-  public getName(): string {
-    return this.name
   }
   public getNextState(): grid {
     this.state = this.state.map((row, rindex) => (
@@ -71,5 +67,12 @@ export default class Game {
     })
     count -= this.state[rindex][cindex]
     return count
+  }
+  private validateInitialState(initialState: grid): boolean {
+    if (initialState.length > 0) {
+      const firstColSize = initialState[0].length
+      return initialState.map((rows) => (rows.length)).every((len) => (len === firstColSize))
+    }
+    throw new Error("Invalid initial state. Grid can not be of size 0(zero)")
   }
 }

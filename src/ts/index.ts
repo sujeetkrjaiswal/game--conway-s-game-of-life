@@ -1,19 +1,46 @@
 import '../css/base.css'
-import Game from "./game"
-import {GameFactory, Oscillators , Stills} from './gameFactory'
+import GameFactory,  {PatternType} from './gameFactory'
+import GameInstance from './gameInstance'
 
-const games1: Game[] = GameFactory.getOscillators(Oscillators.Beacon)
-const games2: Game[] = GameFactory.getSills(Stills.Beehive)
+class App {
+  private mountNode: HTMLDivElement
+  private btnNode: HTMLButtonElement
+  private gameInstances: GameInstance[]
+  public constructor(mountNode: HTMLDivElement, btnNode: HTMLButtonElement) {
+    this.mountNode = mountNode
+    this.btnNode = btnNode
+    this.gameInstances = []
+    this.btnNode.addEventListener('click', (e) => {
+      e.preventDefault()
+      this.renderAll()
+    })
+  }
+  public initWithDefault() {
+    this.gameInstances.push(...GameFactory.getPattern(PatternType.Pattern1, PatternType.Pattern2))
+    const gameFrag: DocumentFragment = document.createDocumentFragment()
+    this.gameInstances.forEach((gameInstance) => {
+      gameFrag.appendChild(gameInstance.getDocFragment())
+    })
+    this.mountNode.innerHTML = ''
+    this.mountNode.appendChild(gameFrag)
+    this.renderAll(true)
+  }
 
-games1.forEach((game) => {
-  game.printState()
-  game.getNextState()
-  game.printState()
-  game.getNextState()
-  game.printState()
-})
-games2.forEach((game) => {
-  game.printState()
-  game.getNextState()
-  game.printState()
-})
+  private generateList(){
+    const listFragment: DocumentFragment = document.createDocumentFragment()
+    const ulElem: HTMLUListElement = document.createElement('ul')
+
+  }
+
+  private renderAll(forceStopUpdate: boolean = false) {
+    this.gameInstances.forEach((gameInstance) => {
+      gameInstance.nextRender(forceStopUpdate)
+    })
+  }
+}
+
+const app = new App(
+  document.getElementById('mountNode') as HTMLDivElement,
+  document.getElementById('nextGeneration') as HTMLButtonElement,
+)
+app.initWithDefault()
