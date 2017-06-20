@@ -1,0 +1,39 @@
+{
+  "name": "game--conway-s-game-of-life",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node ./server/dev.ts",
+    "build": "ts-node ./tools/build.ts",
+    "pserve": "ts-node ./server/dist.ts"
+  },
+  "main": "index.js",
+  "repository": "git@github.com:sujeetkrjaiswal/game--conway-s-game-of-life.git",
+  "author": "Sujeet Kumar Jaiswal <sujeet_jaiswal@outlook.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/compression-webpack-plugin": "^0.3.1",
+    "@types/express": "^4.0.36",
+    "@types/extract-text-webpack-plugin": "^2.1.0",
+    "@types/html-webpack-plugin": "^2.28.0",
+    "@types/webpack": "^2.2.16",
+    "@types/webpack-dev-middleware": "^1.9.1",
+    "@types/webpack-hot-middleware": "^2.15.0",
+    "awesome-typescript-loader": "^3.1.3",
+    "chalk": "^1.1.3",
+    "compression-webpack-plugin": "^0.4.0",
+    "css-loader": "^0.28.4",
+    "express": "^4.15.3",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "html-webpack-plugin": "^2.28.0",
+    "source-map-loader": "^0.2.1",
+    "style-loader": "^0.18.2",
+    "ts-node": "^3.0.6",
+    "tslint": "^5.4.3",
+    "tslint-loader": "^3.5.3",
+    "typescript": "^2.3.4",
+    "webpack": "^2.6.1",
+    "webpack-dev-middleware": "^1.10.2",
+    "webpack-hot-middleware": "^2.18.0"
+  }
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"","sourceRoot":"","sources":["src/ts/game.ts","src/ts/index.ts"],"names":[],"mappings":";;;;;;;YAAA;gBACE;oBACE,OAAO,CAAC,GAAG,CAAC,KAAK,CAAC,CAAC;gBACrB,CAAC;gBACM,uBAAQ,GAAf;oBACE,MAAM,CAAC,YAAY,CAAC;gBACtB,CAAC;gBACH,WAAC;YAAD,CAAC,AAPD,IAOC;;;;;;;;;;;;;;;;YCNK,IAAI,GAAG,IAAI,cAAI,EAAE,CAAC;YACxB,OAAO,CAAC,GAAG,CAAC,IAAI,CAAC,CAAC"}
