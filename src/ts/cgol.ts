@@ -1,6 +1,8 @@
+// Cgol -> Conway's Game of Life
 export type gridVal = 0 | 1
 export type grid = gridVal[][]
-export default class Game {
+
+export default class Cgol {
   public readonly rows: number
   public readonly cols: number
 

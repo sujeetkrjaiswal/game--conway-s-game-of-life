@@ -1,7 +1,7 @@
-import Game, { grid } from './game'
-import GameInstance from './gameInstance'
+import { grid } from './cgol'
+import { IGameInstanceConfig } from './gameInstance'
 
-export enum PatternType {
+enum PatternType {
   // Oscilators
   Blinker,
   Toad,
@@ -27,24 +27,110 @@ export enum PatternType {
 }
 
 export default class GameFactory {
-  // Static and Factory methods
-  public static getPattern(...types: PatternType[]): GameInstance[] {
-    if (types.length === 0) {
-      types.push(
-        PatternType.Glider,
-      )
-    }
-    return types.map((type) => (
-      new GameInstance(
-        new Game(GameFactory.getGrid(type)),
-        PatternType[type],
-      )
-    ))
-  }
-  public static getPatternList() {
+  public static getPatternList(): IGameInstanceConfig[] {
     return [
       {
-        type: PatternType.Acorn,
+        description: '',
+        initialState: this.getGrid(PatternType.Blinker),
+        name: 'Blinker (Oscilator)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Toad),
+        name: 'Toad (Oscilator)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Beacon),
+        name: 'Beacon (Oscilator)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Pulsar),
+        name: 'Pulsar (Oscilator)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Pentadecathlon),
+        name: 'Pentadecathlon (Oscilator)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Block),
+        name: 'Block (Stills)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Beehive),
+        name: 'Beehive (Stills)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Loaf),
+        name: 'Loaf (Stills)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Boat),
+        name: 'Boat (Stills)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Tub),
+        name: 'Tub (Stills)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Glider),
+        name: 'Glider (Continuous)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.TheRPentomino),
+        name: 'TheRPentomino (Others)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Diehard),
+        name: 'Diehard (Others)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Acorn),
+        name: 'Acorn (Others)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Gun),
+        name: 'Gun (Others)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Pattern1),
+        name: 'Pattern1 (Random)',
+        pixelSize: 20,
+        timeInterval: 500,
+      }, {
+        description: '',
+        initialState: this.getGrid(PatternType.Pattern2),
+        name: 'Pattern2 (Random)',
+        pixelSize: 20,
+        timeInterval: 500,
       },
     ]
   }

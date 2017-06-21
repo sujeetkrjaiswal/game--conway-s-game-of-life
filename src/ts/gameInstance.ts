@@ -1,24 +1,39 @@
-import Game, { grid, gridVal } from './game'
+import Cgol, { grid, gridVal } from './cgol'
+
+export interface IGameInstanceConfig {
+    description: string
+    name: string
+    initialState: grid
+    pixelSize: number
+    timeInterval: number
+}
 export default class GameInstance {
-    private static blockSize = 20
-    private player: string
-    private game: Game
+    private static counter: number = 0
+    public id: number
+    private description: string
+    private name: string
+    private game: Cgol
+    private pixelSize: number
     private context: CanvasRenderingContext2D | null
     private gameFragmentView: DocumentFragment | null
-    public constructor(game: Game, player: string) {
-        this.player = player
-        this.game = game
+    public constructor(config: IGameInstanceConfig) {
+        this.name = config.name
+        this.description = config.description
+        this.pixelSize = config.pixelSize
+        this.game = new Cgol(config.initialState)
         this.gameFragmentView = null
+        this.id = ++GameInstance.counter
     }
     public getDocFragment(): DocumentFragment {
         this.gameFragmentView = document.createDocumentFragment()
         const container: HTMLDivElement = document.createElement('div')
         const heading: HTMLHeadingElement = document.createElement('h1')
+        const description: HTMLParagraphElement = document.createElement('p')
         const canvas: HTMLCanvasElement = document.createElement('canvas')
 
         this.context = canvas.getContext('2d')
-        canvas.width = GameInstance.blockSize * this.game.cols
-        canvas.height = GameInstance.blockSize * this.game.rows
+        canvas.width = this.pixelSize * this.game.cols
+        canvas.height = this.pixelSize * this.game.rows
         if (this.context !== null) {
             this.context.fillStyle = '#00F'
             this.context.strokeStyle = '#FFF'
@@ -26,8 +41,10 @@ export default class GameInstance {
 
         container.className = 'game-instance'
         heading.className = 'game-player'
-        heading.textContent = this.player
+        heading.textContent = this.name
+        description.textContent = this.description
         container.appendChild(heading)
+        container.appendChild(description)
         container.appendChild(canvas)
         this.gameFragmentView.appendChild(container)
         return this.gameFragmentView
@@ -60,8 +77,8 @@ export default class GameInstance {
         if (this.context !== null) {
             this.context.clearRect(
                 0, 0,
-                GameInstance.blockSize * this.game.cols,
-                GameInstance.blockSize * this.game.rows,
+                this.pixelSize * this.game.cols,
+                this.pixelSize * this.game.rows,
             )
         }
     }
@@ -71,10 +88,10 @@ export default class GameInstance {
         width: number = 1, height: number = 1) {
         context.fillStyle = colVal === 1 ? '#333' : '#eee'
         context.fillRect(
-            GameInstance.blockSize * x,
-            GameInstance.blockSize * y,
-            GameInstance.blockSize * width,
-            GameInstance.blockSize * height,
+            this.pixelSize * x,
+            this.pixelSize * y,
+            this.pixelSize * width,
+            this.pixelSize * height,
         )
     }
     private strokeRect(
@@ -82,10 +99,10 @@ export default class GameInstance {
         x: number = 0, y: number = 0,
         width: number = 1, height: number = 1) {
         context.strokeRect(
-            GameInstance.blockSize * x,
-            GameInstance.blockSize * y,
-            GameInstance.blockSize * width,
-            GameInstance.blockSize * height,
+            this.pixelSize * x,
+            this.pixelSize * y,
+            this.pixelSize * width,
+            this.pixelSize * height,
         )
     }
 }
