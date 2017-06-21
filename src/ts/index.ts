@@ -3,22 +3,33 @@ import GameFactory from './gameFactory'
 import GameInstance, { IGameInstanceConfig } from './gameInstance'
 
 class App {
+  public timerInterval: number = 300
+  private timer: number
   private mountNode: HTMLDivElement
   private gameInstances: GameInstance[]
   public constructor(mountNode: HTMLDivElement) {
     this.mountNode = mountNode
     this.gameInstances = []
   }
-  public hasAnyGameInstance(): boolean {
-    return this.gameInstances.length > 0
+
+  public initialRender() {
+    const docFragment: DocumentFragment = document.createDocumentFragment()
+    docFragment.appendChild(this.getPatternListDocFragment())
+    this.mountNode.appendChild(docFragment)
   }
-  public renderGameFrame(forceStopUpdate: boolean = false) {
+  private renderGameFrame(forceStopUpdate: boolean = false) {
     this.gameInstances.forEach((gameInstance: GameInstance) => {
       gameInstance.nextRender(forceStopUpdate)
     })
   }
-  public initialRender() {
-    this.renderList()
+  private renderLoop(forceStopUpdate: boolean = false) {
+    clearTimeout(this.timer)
+    this.renderGameFrame()
+    this.timer = window.setTimeout(() => {
+      if (this.gameInstances.length > 0) {
+        this.renderLoop(forceStopUpdate)
+      }
+    }, this.timerInterval)
   }
   private addInstance(config: IGameInstanceConfig) {
     const gameInstance: GameInstance = new GameInstance(config)
@@ -39,10 +50,11 @@ class App {
     instanceContainer.appendChild(removeBtn)
     instanceContainer.appendChild(gameInstance.getDocFragment())
     this.mountNode.appendChild(instanceContainer)
-    this.renderGameFrame(true)
+    this.renderLoop(true)
   }
-  private renderList() {
-    const btnListFragment: DocumentFragment = document.createDocumentFragment()
+  private getPatternListDocFragment(): DocumentFragment {
+    const docFragment: DocumentFragment = document.createDocumentFragment()
+    // Pattern btn container
     const patternBtnContainer: HTMLDivElement = document.createElement('div')
     patternBtnContainer.className = 'pattern-list'
     GameFactory.getPatternList().forEach((config: IGameInstanceConfig) => {
@@ -54,35 +66,13 @@ class App {
       }
       patternBtnContainer.appendChild(patternBtn)
     })
-    const manualBtn: HTMLButtonElement = document.createElement('button')
-    manualBtn.textContent = 'Manual Pattern'
-    manualBtn.className = 'pattern-item'
-    manualBtn.onclick = () => {
-      // tslint:disable-next-line
-      console.log('test: todo')
-    }
-    patternBtnContainer.appendChild(manualBtn)
-    btnListFragment.appendChild(patternBtnContainer)
-    this.mountNode.appendChild(btnListFragment)
+    docFragment.appendChild(patternBtnContainer)
+    return docFragment
   }
+
 }
 
 const app = new App(
   document.getElementById('mountNode') as HTMLDivElement,
 )
 app.initialRender()
-
-setInterval(() => {
-  app.renderGameFrame()
-}, 300)
-
-let timer: number
-const render = () => {
-  clearTimeout(timer)
-  timer = window.setTimeout(() => {
-    app.renderGameFrame()
-    if (app.hasAnyGameInstance()) {
-      render()
-    }
-  }, 200)
-}
