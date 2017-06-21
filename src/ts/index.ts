@@ -4,61 +4,85 @@ import GameInstance, { IGameInstanceConfig } from './gameInstance'
 
 class App {
   private mountNode: HTMLDivElement
-  private btnNode: HTMLButtonElement
   private gameInstances: GameInstance[]
-  public constructor(mountNode: HTMLDivElement, btnNode: HTMLButtonElement) {
+  public constructor(mountNode: HTMLDivElement) {
     this.mountNode = mountNode
-    this.btnNode = btnNode
     this.gameInstances = []
-    this.btnNode.addEventListener('click', (e) => {
-      e.preventDefault()
-      this.renderAll()
-    })
-    this.generateList()
   }
-  public initWithDefault() {
-    this.gameInstances = GameFactory.getPatternList().map((config: IGameInstanceConfig) => (new GameInstance(config)))
-    const gameFrag: DocumentFragment = document.createDocumentFragment()
-    this.gameInstances.forEach((gameInstance) => {
-      gameFrag.appendChild(gameInstance.getDocFragment())
-    })
-    this.mountNode.innerHTML = ''
-    this.mountNode.appendChild(gameFrag)
-    this.renderAll(true)
+  public hasAnyGameInstance(): boolean {
+    return this.gameInstances.length > 0
   }
-  public renderAll(forceStopUpdate: boolean = false) {
-    this.gameInstances.forEach((gameInstance) => {
+  public renderGameFrame(forceStopUpdate: boolean = false) {
+    this.gameInstances.forEach((gameInstance: GameInstance) => {
       gameInstance.nextRender(forceStopUpdate)
     })
   }
-  public test() {
-    // tslint:disable-next-line
-    console.log('hello')
+  public initialRender() {
+    this.renderList()
   }
-  private addToInstance(config: IGameInstanceConfig) {
+  private addInstance(config: IGameInstanceConfig) {
     const gameInstance: GameInstance = new GameInstance(config)
     this.gameInstances.push(gameInstance)
-    this.mountNode.appendChild(gameInstance.getDocFragment())
-    this.renderAll(true)
+    const instanceContainer: HTMLDivElement = document.createElement('div')
+    const removeBtn: HTMLButtonElement = document.createElement('button')
+
+    instanceContainer.className = 'game-instance-container'
+    removeBtn.className = 'game-instance-remove'
+    removeBtn.textContent = "X"
+    removeBtn.onclick = () => {
+      // tslint:disable-next-line
+      console.log('removing', gameInstance)
+      this.gameInstances = this.gameInstances.filter(
+        (unitGameInstance) => unitGameInstance.id !== gameInstance.id)
+      instanceContainer.remove()
+    }
+    instanceContainer.appendChild(removeBtn)
+    instanceContainer.appendChild(gameInstance.getDocFragment())
+    this.mountNode.appendChild(instanceContainer)
+    this.renderGameFrame(true)
   }
-  private generateList() {
-    const listFragment: DocumentFragment = document.createDocumentFragment()
-    const ulElem: HTMLUListElement = document.createElement('ul')
+  private renderList() {
+    const btnListFragment: DocumentFragment = document.createDocumentFragment()
+    const patternBtnContainer: HTMLDivElement = document.createElement('div')
+    patternBtnContainer.className = 'pattern-list'
     GameFactory.getPatternList().forEach((config: IGameInstanceConfig) => {
-      const liElem: HTMLLIElement = document.createElement('li')
-      liElem.textContent = config.name
-      liElem.onclick = () => {
-        this.addToInstance(config)
+      const patternBtn: HTMLButtonElement = document.createElement('button')
+      patternBtn.className = 'pattern-item'
+      patternBtn.textContent = config.name
+      patternBtn.onclick = () => {
+        this.addInstance(config)
       }
-      ulElem.appendChild(liElem)
+      patternBtnContainer.appendChild(patternBtn)
     })
-    listFragment.appendChild(ulElem)
-    this.mountNode.appendChild(listFragment)
+    const manualBtn: HTMLButtonElement = document.createElement('button')
+    manualBtn.textContent = 'Manual Pattern'
+    manualBtn.className = 'pattern-item'
+    manualBtn.onclick = () => {
+      // tslint:disable-next-line
+      console.log('test: todo')
+    }
+    patternBtnContainer.appendChild(manualBtn)
+    btnListFragment.appendChild(patternBtnContainer)
+    this.mountNode.appendChild(btnListFragment)
   }
 }
 
 const app = new App(
   document.getElementById('mountNode') as HTMLDivElement,
-  document.getElementById('nextGeneration') as HTMLButtonElement,
 )
-app.test()
+app.initialRender()
+
+setInterval(() => {
+  app.renderGameFrame()
+}, 300)
+
+let timer: number
+const render = () => {
+  clearTimeout(timer)
+  timer = window.setTimeout(() => {
+    app.renderGameFrame()
+    if (app.hasAnyGameInstance()) {
+      render()
+    }
+  }, 200)
+}

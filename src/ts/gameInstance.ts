@@ -9,7 +9,7 @@ export interface IGameInstanceConfig {
 }
 export default class GameInstance {
     private static counter: number = 0
-    public id: number
+    public readonly id: number
     private description: string
     private name: string
     private game: Cgol
